@@ -1,0 +1,982 @@
+{
+  "name": "Cybersecurity Alert Investigation System",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "2523ec85-14c3-42b1-a1f1-f02c7354c777",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "cyber-alert",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        192
+      ],
+      "id": "3db9ca43-88e6-43e4-8a9c-f9250f9f9bf3",
+      "name": "Webhook",
+      "webhookId": "6f594a69-9380-48f1-a1ad-bd35fc5e3d14"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "07b5d264-14c2-4cca-bbba-5e3e15d4455b",
+              "name": "alert_id",
+              "value": "={{ $json.body ? $json.body.alert_id : ( $json.alert_id || 'A011' ) }}",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": "={{ false }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        224,
+        96
+      ],
+      "id": "68a17808-43c8-43e5-9b51-36fdc82ed19f",
+      "name": "Input"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "W2yhyZJHxlPTTHb0",
+          "mode": "list",
+          "cachedResultName": "ALERTS",
+          "cachedResultUrl": "/projects/kt0uMuqFUhIBEvvO/datatables/W2yhyZJHxlPTTHb0"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "alert_id",
+              "keyValue": "={{ $json.alert_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        96
+      ],
+      "id": "3ffb8290-8bba-467e-bdac-0655658a4bd2",
+      "name": "Get Alert"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "CqWqV3RggzM4OBSq",
+          "mode": "list",
+          "cachedResultName": "LOGS",
+          "cachedResultUrl": "/projects/kt0uMuqFUhIBEvvO/datatables/CqWqV3RggzM4OBSq"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "alert_id",
+              "keyValue": "={{ $('Input').item.json.alert_id }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        96
+      ],
+      "id": "844f0fca-982e-4cca-ab9e-8372f694808b",
+      "name": "Get Logs"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "logs",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        896,
+        96
+      ],
+      "id": "4a0f7722-0928-4ba6-9241-a72116be5aae",
+      "name": "Aggregate Logs"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "IVSslFAvkGFpGz7l",
+          "mode": "list",
+          "cachedResultName": "USERS",
+          "cachedResultUrl": "/projects/kt0uMuqFUhIBEvvO/datatables/IVSslFAvkGFpGz7l"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1120,
+        96
+      ],
+      "id": "693fe96f-5d49-4340-b662-82982683e3b3",
+      "name": "Get Users"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "users",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1344,
+        96
+      ],
+      "id": "b823bf7a-a935-47b4-91e9-df9f38882336",
+      "name": "Aggregate Users"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "2Vx5RzYzxU8pEHGe",
+          "mode": "list",
+          "cachedResultName": "ASSETS",
+          "cachedResultUrl": "/projects/kt0uMuqFUhIBEvvO/datatables/2Vx5RzYzxU8pEHGe"
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        96
+      ],
+      "id": "b01782f6-fb81-4c71-8f4d-e08b724e0376",
+      "name": "Get Assets"
+    },
+    {
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "assets",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [
+        1792,
+        96
+      ],
+      "id": "50368c6c-44e8-4f7e-952d-302832980178",
+      "name": "Aggregate Assets"
+    },
+    {
+      "parameters": {
+        "jsCode": "const alertRow  = $('Get Alert').first().json;\nconst logRows   = $('Aggregate Logs').first().json.logs   || [];\nconst userRows  = $('Aggregate Users').first().json.users  || [];\nconst assetRows = $('Aggregate Assets').first().json.assets || [];\n\nconst logs = logRows\n  .map(l => ({ log_id: l.log_id, log_datetime: l.log_datetime,\n               event_type: l.event_type, details: l.details }))\n  .sort((a, b) => String(a.log_datetime).localeCompare(String(b.log_datetime)));\n\nconst key   = alertRow.context_key;\nconst user  = alertRow.entity_type === 'user'\n            ? (userRows.find(u => u.user_id === key)  || null) : null;\nconst asset = alertRow.entity_type === 'asset'\n            ? (assetRows.find(a => a.asset_id === key) || null) : null;\n\nconst toMin = (dt) => {\n  const m = String(dt).match(/(\\d{1,2}):(\\d{2})/);\n  return m ? (Number(m[1]) * 60 + Number(m[2])) : null;\n};\nconst times = [alertRow.alert_datetime, ...logs.map(l => l.log_datetime)]\n                .map(toMin).filter(t => t !== null);\nlet outside_working_hours = null;\nlet timing_detail = 'No user profile for this alert, working hours not applicable';\nif (user) {\n  const s = toMin(user.work_start), e = toMin(user.work_end);\n  const out = times.filter(t => t < s || t > e);\n  outside_working_hours = out.length > 0;\n  timing_detail = outside_working_hours\n    ? out.length + ' of ' + times.length + ' event time(s) fall outside ' + user.work_start + '-' + user.work_end\n    : 'All event times fall inside ' + user.work_start + '-' + user.work_end;\n}\n\nconst expected = String(alertRow.related_logs || '').split(',')\n                   .map(s => s.trim()).filter(Boolean);\nconst found    = logs.map(l => l.log_id);\nconst missing_logs = expected.filter(id => !found.includes(id));\nconst alertDay = String(alertRow.alert_datetime).slice(0, 10);\nconst logs_on_other_day = logs.filter(l => String(l.log_datetime).slice(0, 10) !== alertDay)\n                              .map(l => l.log_id);\n\nreturn [{\n  json: {\n    case_id: 'CASE-' + alertRow.alert_id,\n    alert: {\n      alert_id: alertRow.alert_id, alert_datetime: alertRow.alert_datetime,\n      alert_type: alertRow.alert_type, user_asset: alertRow.user_asset,\n      entity_type: alertRow.entity_type, source: alertRow.source,\n      description: alertRow.description, initial_status: alertRow.initial_status\n    },\n    logs: logs,\n    log_count: logs.length,\n    user_context: user,\n    asset_context: asset,\n    timing: { outside_working_hours, timing_detail },\n    data_completeness: {\n      expected_log_ids: expected, retrieved_log_ids: found,\n      missing_logs: missing_logs,\n      acting_account_identified: !!user,\n      timestamp_inconsistency: logs_on_other_day.length > 0,\n      logs_outside_alert_day: logs_on_other_day\n    },\n    retrieved_at: new Date().toISOString()\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2016,
+        96
+      ],
+      "id": "96521204-007c-4fba-80f9-22b8be1959a1",
+      "name": "Build Case File"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Organise this security case file.\n\nCASE FILE:\n{{ JSON.stringify($json, null, 2) }}",
+        "options": {
+          "systemMessage": "You are Agent 1, the Alert Intake and Evidence Linker in a cybersecurity\ninvestigation system at SecureNet Solutions.\n\nYour ONLY job is to organise information. You must NOT decide severity, risk,\nor whether an incident occurred. Later agents do that.\n\nTasks:\n1. Restate the alert in one clear factual sentence.\n2. Put the supplied logs into a chronological narrative of what is recorded.\n3. Classify what the logs show using ONLY these labels:\n   \"attempt_only\", \"successful_access\", \"blocked_by_control\",\n   \"data_read\", \"data_exfiltration_indicator\", \"user_reported\",\n   \"system_explained\", \"no_activity\".\n4. State what evidence WOULD be needed to confirm the alert, and which of\n   those items is present or absent in the supplied data.\n5. Never invent a log, IP address, account name, file name or timestamp.\n   If something is not in the supplied data, list it under missing_evidence.\n\nWork only from the case file given to you.\n\nmissing_evidence must be an array of plain text strings only, never objects.\n\nOutput JSON only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2240,
+        96
+      ],
+      "id": "a6ec2c31-7702-49ea-bd76-ea9664fb11a5",
+      "name": "Agent 1: Alert Intake"
+    },
+    {
+      "parameters": {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "options": {
+          "maxTokens": 11000,
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2240,
+        320
+      ],
+      "id": "6eba4ad6-cce6-416a-8298-4618a155d64a",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "4kOZeH04ahY4rQZi",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Assess the business context of this case.\n\nCASE FILE:\n{{ JSON.stringify($('Build Case File').first().json, null, 2) }}\n\nAGENT 1 (INTAKE) OUTPUT:\n{{ JSON.stringify($json.output, null, 2) }}",
+        "options": {
+          "systemMessage": "You are Agent 2, the Context Analyst in a cybersecurity investigation system\nat SecureNet Solutions.\n\nYour ONLY job is to decide whether the observed activity is EXPECTED or\nUNEXPECTED for the people and systems involved. You must NOT assign severity.\n\nRules you must follow:\n- Judge behaviour against the supplied user profile (department, role,\n  access level, working hours) and asset profile (type, business importance,\n  data sensitivity). Do not use outside assumptions about the company.\n- The field timing.outside_working_hours has already been calculated in code.\n  Trust it. Do not recalculate times yourself.\n- If the user profile is null, the acting account is UNKNOWN. Say so clearly\n  and set acting_account_known to false. Never assume who the account was.\n- On-call permission means out-of-hours use is ALLOWED but NOT PROVEN. Treat\n  it as \"claimed, needs verification\", never as \"confirmed legitimate\".\n- A plausible business explanation must be recorded even when you doubt it,\n  together with what would confirm or disprove it.\n- Sensitive or Confidential data raises business impact even when the\n  activity itself looks ordinary.\n\nUse these exact lowercase values where a field has a fixed set of options.\nexpected_behaviour_assessment must be exactly one of: \"expected\",\n\"unexpected\", \"cannot_determine\" — all lowercase, no other wording.\non_call_status must be exactly one of: \"not_applicable\", \"claimed_unverified\",\n\"verified\" — all lowercase, no other wording. Never write \"N/A\", \"UNKNOWN\",\nor any variation in different casing.\nRespond with ONLY a raw JSON object matching the exact structure shown above.\nDo not explain what fields you will include. Do not describe your plan. Do\nnot write any sentence before or after the JSON. Your entire response must\nbe nothing but the JSON object itself, starting immediately with { and\nending with }. Any text other than the JSON object is a failure.\nOutput JSON only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2816,
+        96
+      ],
+      "id": "1488f624-4357-4bf2-b9e2-ae383c7eea87",
+      "name": "Agent 2: Context Analyst"
+    },
+    {
+      "parameters": {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "options": {
+          "maxTokens": 11000,
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        2816,
+        320
+      ],
+      "id": "699bc050-6bcd-419a-b358-6f8dec1a8f01",
+      "name": "OpenRouter Chat Model1",
+      "credentials": {
+        "openRouterApi": {
+          "id": "4kOZeH04ahY4rQZi",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Evaluate the evidence in this case.\n\nCASE FILE:\n{{ JSON.stringify($('Build Case File').first().json, null, 2) }}\n\nAGENT 1 (INTAKE) OUTPUT:\n{{ JSON.stringify($('Agent 1: Alert Intake').first().json.output, null, 2) }}\n\nAGENT 2 (CONTEXT) OUTPUT:\n{{ JSON.stringify($json.output, null, 2) }}",
+        "options": {
+          "systemMessage": "You are Agent 3, the Evidence Evaluator in a cybersecurity investigation\nsystem at SecureNet Solutions.\n\nYour ONLY job is to judge the QUALITY and MEANING of the evidence. You must\nNOT assign severity; Agent 4 does that.\n\nRules you must follow:\n- Distinguish clearly between: an attempt, a blocked attempt, a successful\n  access, and confirmed removal of data. These are not equally serious.\n- A control that blocked the activity is evidence of DEFENCE WORKING, and\n  reduces the strength of the threat.\n- A recorded system explanation (for example a scheduled backup job running\n  in the same window) is a benign indicator, but state whether it fully\n  accounts for the observation or only part of it.\n- List every evidence gap: unknown actor, no source IP, no device ID, no\n  file names, no follow-up activity, timestamps that do not line up with\n  the alert time, only one log for a claim about many users.\n- evidence_strength is a number from 0 to 1 meaning: how well do the supplied\n  logs actually support the alert description?\n    0.0-0.3 very weak, the logs barely relate to the claim\n    0.4-0.6 partial, consistent but important facts are missing\n    0.7-0.8 strong, logs clearly support the claim\n    0.9-1.0 conclusive, the logs directly evidence the claim\n- If evidence is incomplete or contradictory you must say so plainly. Never\n  fill a gap with an assumption.\n\nUse these exact lowercase values where a field has a fixed set of options.\nlogs_support_alert must be exactly one of: \"yes\", \"partly\", \"no\".\noutcome_of_activity must be exactly one of: \"attempt_only\", \"blocked\",\n\"successful_access\", \"data_removed\", \"no_activity\". Never use other wording\nor casing for these two fields.\n\nbenign_indicators must ONLY contain things that reduce the threat (a block,\na confirmed authorized explanation, a matching scheduled job). Never put an\nabsence of evidence there. Any missing information (unknown account, no\nsource IP, no authorization record, no file names) belongs in evidence_gaps\ninstead, never in benign_indicators.\n\nOutput JSON only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        3392,
+        96
+      ],
+      "id": "69eb9771-5bf2-4c64-9f65-e25e091c1160",
+      "name": "Agent 3: Evidence Evaluator"
+    },
+    {
+      "parameters": {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "options": {
+          "maxTokens": 12000,
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        3472,
+        336
+      ],
+      "id": "f14d498f-71fe-46b0-9ca5-26c46c068a58",
+      "name": "OpenRouter Chat Model2",
+      "credentials": {
+        "openRouterApi": {
+          "id": "4kOZeH04ahY4rQZi",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "==Produce the final risk assessment for this case.\n\nCASE FILE:\n{{ JSON.stringify($('Build Case File').first().json, null, 2) }}\n\nAGENT 1 (INTAKE):\n{{ JSON.stringify($('Agent 1: Alert Intake').first().json.output, null, 2) }}\n\nAGENT 2 (CONTEXT):\n{{ JSON.stringify($('Agent 2: Context Analyst').first().json.output, null, 2) }}\n\nAGENT 3 (EVIDENCE):\n{{ JSON.stringify($json.output, null, 2) }}",
+        "options": {
+          "systemMessage": "You are Agent 4, the Risk Assessor in a cybersecurity investigation system at\nSecureNet Solutions. You produce the final recommendation for a human analyst.\n\nYou do NOT take action. You never disable accounts, reset passwords, block\nusers, delete files, change permissions or firewall rules, or restart systems.\nYou only analyse and recommend. Every action stays with security staff.\n\nCOMPANY INVESTIGATION RULES (cite by number in rules_applied):\nR1  Failed login attempts with no successful access: review and monitor\n    unless other suspicious evidence exists.\nR2  Failed logins followed by successful access from an unusual location:\n    account verification is required.\nR3  Login from a new device followed by normal activity: user context must be\n    reviewed before deciding whether to escalate.\nR4  Suspicious executable blocked by endpoint protection: review whether any\n    additional suspicious activity occurred.\nR5  Sensitive files accessed by an unusual user or account: high-priority\n    investigation.\nR6  Large number of sensitive files downloaded unexpectedly: security team\n    review.\nR7  Suspicious email reported without interaction: record it and investigate\n    whether similar messages were received elsewhere.\nR8  Similar suspicious emails received by multiple employees: broader\n    investigation.\nR9  Administrative account used outside normal working hours: check whether\n    the activity matches approved on-call access.\nR10 Unusual network traffic with a known business explanation: record the\n    explanation and consider it in the final assessment.\nR11 Evidence incomplete or conflicting: do not make a confident unsupported\n    conclusion.\nR12 Critical or High recommendation: security personnel must review the case\n    before any action is taken.\n\nSCORING RUBRIC - list ONLY the factors that genuinely apply to this case in\nscore_breakdown, each with its point value. Do NOT include a factor that\ndoesn't apply, and do NOT include zero-point entries.\n +3 confirmed or strongly indicated unauthorised successful access to\n    Confidential data\n +2 successful access after failed attempts from a new location or unseen device\n +2 sensitive or confidential data downloaded or copied out\n +2 account involved is Administrative or has Sensitive access\n +2 affected asset data_sensitivity is Confidential\n +1 activity outside working hours with on-call not verified\n +1 repeated attempts against restricted or protected resources\n +1 malicious or unknown executable involved\n +1 more than one user or system affected\n +1 message content attempts to harvest credentials (phishing indicators)\n -3 threat blocked or prevented by a security control\n -3 recorded business or system explanation accounts for the observation\n -2 no successful access occurred\n -1 user reported the event and did not interact with it\n\nSEVERITY BANDS (applied to the raw, uncapped score): score <=1 Low;\n2-3 Medium; 4-5 High; >=6 Critical.\n\nCAPS (apply after computing severity from the bands above; state the reason\nin capping_applied):\n - If evidence_strength is below 0.5, severity may not exceed Medium.\n - If Confidential data was successfully accessed by an unidentified account,\n   severity may not be below Medium.\n - If no cap applies, capping_applied must be exactly \"none\".\n\nCRITICAL - risk_score vs severity, do not confuse these two:\n- risk_score is ALWAYS the raw, uncapped sum of the points in score_breakdown.\n  Never adjust risk_score to match a capped severity band.\n- severity is the word (Low/Medium/High/Critical) chosen from the SEVERITY\n  BANDS using the raw risk_score, then adjusted downward or upward only by\n  the CAPS rules above.\n- Example: if score_breakdown sums to 7, risk_score MUST be 7, even if a cap\n  reduces severity to \"Medium\". The cap changes the severity WORD only, never\n  the risk_score NUMBER.\n- Before answering, recount the sum of score_breakdown yourself and write the\n  arithmetic in justification (for example: \"3 + 2 + 2 = 7\"). Set risk_score\n  to that exact total.\n\nrequires_human_review must be true when severity is High or Critical, when\nconfidence is below 0.6, when the acting account is unknown, or when evidence\nis contradictory.\n\nUse exact values: severity must be exactly one of \"Low\", \"Medium\", \"High\",\n\"Critical\" (capitalised first letter only, as shown). review_priority must be\nexactly one of: \"immediate\", \"urgent\", \"routine\", \"monitor\" — all lowercase.\n\nRecommendations must be investigative steps for a human (verify, check,\ncontact, review, correlate), never automated enforcement actions.\n\nUse exactly these field names in your JSON, spelled exactly as shown, with\nno variations: investigation_summary, recommended_actions, justification,\nscore_breakdown, rules_applied, unresolved_questions, confidence,\nreview_priority, requires_human_review, capping_applied, severity. Do not\nrename, abbreviate, or nest these fields differently.\n\nscore_breakdown must be an array of objects, each with exactly two fields:\n\"factor\" (string) and \"points\" (number). Never output score_breakdown as an\narray of plain strings.\n\nOutput JSON only."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        3968,
+        96
+      ],
+      "id": "ff91ce61-00e0-490d-82bf-aa22f471f9b8",
+      "name": "Agent 4: Risk Assessor"
+    },
+    {
+      "parameters": {
+        "model": "nvidia/nemotron-3-super-120b-a12b:free",
+        "options": {
+          "maxTokens": 12000,
+          "temperature": 0.1
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        4048,
+        336
+      ],
+      "id": "0b81f0ce-6061-4e0f-b459-13bb4153231e",
+      "name": "OpenRouter Chat Model3",
+      "credentials": {
+        "openRouterApi": {
+          "id": "4kOZeH04ahY4rQZi",
+          "name": "OpenRouter account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const c  = $('Build Case File').first().json;\nconst a1 = $('Parse Agent 1 Output').first().json.output;\nconst a2 = $('Parse Agent 2 Output').first().json.output;\nconst a3 = $('Parse Agent 3 Output').first().json.output;\nconst a4 = $json.output;\n\nconst forced = [];\nif (['High', 'Critical'].includes(a4.severity))      forced.push('High or Critical severity (R12)');\nif (Number(a4.confidence) < 0.6)                      forced.push('Low confidence');\nif (a2.acting_account_known === false)                forced.push('Acting account not identified');\nif ((a3.contradictions || []).length > 0)             forced.push('Contradictory evidence (R11)');\nif ((a3.evidence_gaps || []).length > 2)              forced.push('Multiple evidence gaps (R11)');\n\nconst order = ['Low', 'Medium', 'High', 'Critical'];\nlet severity = a4.severity;\nlet capping  = a4.capping_applied || 'none';\nif (Number(a3.evidence_strength) < 0.5 && order.indexOf(severity) > 1) {\n  severity = 'Medium';\n  capping  = 'Severity capped at Medium in code: evidence_strength below 0.5 (R11)';\n}\n\nconst requires_human_review = Boolean(a4.requires_human_review) || forced.length > 0;\n\nconst record = {\n  investigation_id: 'INV-' + c.alert.alert_id + '-' + Date.now(),\n  created_at: new Date().toISOString(),\n  alert: c.alert,\n  severity: severity,\n  risk_score: (a4.score_breakdown || []).reduce((sum, f) => sum + (Number(f.points) || 0), 0) || Number(a4.risk_score) || 0,\n  score_breakdown: a4.score_breakdown || [],\n  capping_applied: capping,\n  confidence: Number(a4.confidence) || 0,\n  evidence_strength: Number(a3.evidence_strength) || 0,\n  investigation_summary: a4.investigation_summary,\n  justification: a4.justification,\n  rules_applied: a4.rules_applied || [],\n  timeline: a1.timeline || [],\n  linked_log_ids: c.data_completeness.retrieved_log_ids,\n  user_context: a2.user_context,\n  asset_context: a2.asset_context,\n  outside_working_hours: c.timing.outside_working_hours,\n  possible_business_explanation: a2.possible_business_explanation,\n  red_flags: a3.red_flags || [],\n  benign_indicators: a3.benign_indicators || [],\n  evidence_gaps: [...(a3.evidence_gaps || []), ...(a1.missing_evidence || [])],\n  contradictions: a3.contradictions || [],\n  unresolved_questions: a4.unresolved_questions || [],\n  recommended_actions: a4.recommended_actions || [],\n  actions_taken_by_system: 'None. This system performs analysis only. All security actions remain with SecureNet security personnel.',\n  requires_human_review: requires_human_review,\n  human_review_reasons: forced,\n  review_priority: a4.review_priority || 'routine'\n};\n\nreturn [{ json: record }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4544,
+        96
+      ],
+      "id": "b6c68d24-8b8b-4bf2-a738-bd5b22fab5ae",
+      "name": "Build Investigation Record"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c5995b90-0d5a-46f8-b022-d014d713d366",
+              "leftValue": "={{ $json.requires_human_review }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        4768,
+        96
+      ],
+      "id": "d6cf996b-bf83-4923-9ff5-26a571246f7d",
+      "name": "Needs Human Review"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6555a26e-f880-46c5-b271-bbc770b25c4f",
+              "name": "subject",
+              "value": "={{ '[' + $json.severity + '] ' + $json.alert.alert_id + ' - ' + $json.review_priority + ' review required' }}",
+              "type": "string"
+            },
+            {
+              "id": "0a89355b-fb26-42bc-b5db-e678a5dbf3db",
+              "name": "body",
+              "value": "={{ $json.investigation_summary }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        4992,
+        32
+      ],
+      "id": "ff6ed20b-6543-4590-8633-7e67182cc6dc",
+      "name": "Notify Security Team"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "GzLxqTTG3gLjLxJv",
+          "mode": "list",
+          "cachedResultName": "INVESTIGATIONS",
+          "cachedResultUrl": "/projects/kt0uMuqFUhIBEvvO/datatables/GzLxqTTG3gLjLxJv"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "requires_human_review": "={{ $('Build Investigation Record').first().json.requires_human_review }}",
+            "investigation_id": "={{ $('Build Investigation Record').first().json.investigation_id }}",
+            "alert_id": "={{ $('Build Investigation Record').first().json.alert.alert_id }}",
+            "severity": "=\t{{ $('Build Investigation Record').first().json.severity }}",
+            "risk_score": "={{ $('Build Investigation Record').first().json.risk_score }}",
+            "confidence": "={{ $('Build Investigation Record').first().json.confidence }}",
+            "evidence_strength": "={{ $('Build Investigation Record').first().json.evidence_strength }}",
+            "summary": "=\t{{ $('Build Investigation Record').first().json.investigation_summary }}",
+            "recommendations": "={{ $('Build Investigation Record').first().json.recommended_actions.join('; ') }}",
+            "rules_applied": "={{ $('Build Investigation Record').first().json.rules_applied.join(', ') }}",
+            "evidence_gaps": "={{ $('Build Investigation Record').first().json.evidence_gaps.join('; ') }}",
+            "full_record": "={{ JSON.stringify($('Build Investigation Record').first().json) }}",
+            "created_at": "={{ $('Build Investigation Record').first().json.created_at }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "investigation_id",
+              "displayName": "investigation_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "alert_id",
+              "displayName": "alert_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "severity",
+              "displayName": "severity",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "risk_score",
+              "displayName": "risk_score",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "confidence",
+              "displayName": "confidence",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "evidence_strength",
+              "displayName": "evidence_strength",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "requires_human_review",
+              "displayName": "requires_human_review",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "boolean",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "recommendations",
+              "displayName": "recommendations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "rules_applied",
+              "displayName": "rules_applied",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "evidence_gaps",
+              "displayName": "evidence_gaps",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "full_record",
+              "displayName": "full_record",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "created_at",
+              "displayName": "created_at",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        5248,
+        192
+      ],
+      "id": "30e62bfa-dad3-485c-b023-6451498594e7",
+      "name": "Save Investigation"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || $json.text || '';\nlet cleaned = String(raw).trim();\n\n// Strip markdown fences if present\ncleaned = cleaned.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\n\n// Extract just the JSON object even if the model added commentary around it\nconst firstBrace = cleaned.indexOf('{');\nconst lastBrace = cleaned.lastIndexOf('}');\nif (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {\n  cleaned = cleaned.slice(firstBrace, lastBrace + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Could not parse Agent 2 output as JSON. Raw text: ' + String(raw).slice(0, 800));\n}\n\nreturn [{ json: { output: parsed } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3184,
+        96
+      ],
+      "id": "326d9b15-5ad7-4bc7-a412-5725e74aa954",
+      "name": "Parse Agent 2 Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || $json.text || '';\nlet cleaned = String(raw).trim();\ncleaned = cleaned.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\n\nconst firstBrace = cleaned.indexOf('{');\nconst lastBrace = cleaned.lastIndexOf('}');\nif (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {\n  cleaned = cleaned.slice(firstBrace, lastBrace + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Could not parse Agent 3 output as JSON. Raw text: ' + String(raw).slice(0, 800));\n}\n\nreturn [{ json: { output: parsed } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        3760,
+        96
+      ],
+      "id": "98f4aae3-5976-4ba8-a0ea-db3bed7afa13",
+      "name": "Parse Agent 3 Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || $json.text || '';\nlet cleaned = String(raw).trim();\ncleaned = cleaned.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\n\nconst firstBrace = cleaned.indexOf('{');\nconst lastBrace = cleaned.lastIndexOf('}');\nif (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {\n  cleaned = cleaned.slice(firstBrace, lastBrace + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Could not parse Agent 4 output as JSON. Raw text: ' + String(raw).slice(0, 800));\n}\n\nreturn [{ json: { output: parsed } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        4336,
+        96
+      ],
+      "id": "ec5c98c6-07c4-4c7f-8e49-1720df2840b2",
+      "name": "Parse Agent 4 Output"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $json.output || $json.text || '';\nlet cleaned = String(raw).trim();\ncleaned = cleaned.replace(/^```json\\s*/i, '').replace(/^```\\s*/i, '').replace(/```\\s*$/i, '').trim();\n\nconst firstBrace = cleaned.indexOf('{');\nconst lastBrace = cleaned.lastIndexOf('}');\nif (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {\n  cleaned = cleaned.slice(firstBrace, lastBrace + 1);\n}\n\nlet parsed;\ntry {\n  parsed = JSON.parse(cleaned);\n} catch (e) {\n  throw new Error('Could not parse Agent 1 output as JSON. Raw text: ' + String(raw).slice(0, 800));\n}\n\nreturn [{ json: { output: parsed } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        2608,
+        96
+      ],
+      "id": "f94cb2b7-4f31-4994-b2aa-c21b03f23398",
+      "name": "Parse Agent 1 Output"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Input": {
+      "main": [
+        [
+          {
+            "node": "Get Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Alert": {
+      "main": [
+        [
+          {
+            "node": "Get Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Logs": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Logs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Logs": {
+      "main": [
+        [
+          {
+            "node": "Get Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Users": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Users",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Users": {
+      "main": [
+        [
+          {
+            "node": "Get Assets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Assets": {
+      "main": [
+        [
+          {
+            "node": "Aggregate Assets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Aggregate Assets": {
+      "main": [
+        [
+          {
+            "node": "Build Case File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Case File": {
+      "main": [
+        [
+          {
+            "node": "Agent 1: Alert Intake",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 1: Alert Intake",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 1: Alert Intake": {
+      "main": [
+        [
+          {
+            "node": "Parse Agent 1 Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 2: Context Analyst",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 2: Context Analyst": {
+      "main": [
+        [
+          {
+            "node": "Parse Agent 2 Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 3: Evidence Evaluator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 3: Evidence Evaluator": {
+      "main": [
+        [
+          {
+            "node": "Parse Agent 3 Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Agent 4: Risk Assessor",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Agent 4: Risk Assessor": {
+      "main": [
+        [
+          {
+            "node": "Parse Agent 4 Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Investigation Record": {
+      "main": [
+        [
+          {
+            "node": "Needs Human Review",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Needs Human Review": {
+      "main": [
+        [
+          {
+            "node": "Notify Security Team",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Save Investigation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Security Team": {
+      "main": [
+        [
+          {
+            "node": "Save Investigation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Agent 2 Output": {
+      "main": [
+        [
+          {
+            "node": "Agent 3: Evidence Evaluator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Agent 3 Output": {
+      "main": [
+        [
+          {
+            "node": "Agent 4: Risk Assessor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Agent 4 Output": {
+      "main": [
+        [
+          {
+            "node": "Build Investigation Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Agent 1 Output": {
+      "main": [
+        [
+          {
+            "node": "Agent 2: Context Analyst",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "48b92e35-cd1d-4c73-b0f7-2ac608c12df5",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "c145379885855a26371fc788eb83fa554ab806480e4a616a22bdc3c97d300274"
+  },
+  "nodeGroups": [],
+  "id": "Lmh16De7gDCGZaKR",
+  "tags": []
+}
